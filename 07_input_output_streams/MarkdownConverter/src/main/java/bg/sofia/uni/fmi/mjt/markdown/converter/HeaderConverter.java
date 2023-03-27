@@ -15,7 +15,7 @@ public class HeaderConverter extends AbstractConverter {
     public String apply(String line) {
         int counter = 0;
 
-        while (line.indexOf(counter) == HEADER_SYMBOL) {
+        while (line.charAt(counter) == HEADER_SYMBOL) {
             counter++;
         }
 

@@ -29,7 +29,9 @@ public abstract class AbstractFormattingConverter extends AbstractConverter {
     }
 
     private String getFormattedContent(String line) {
-        int firstOcc = line.indexOf(formattingSymbol);
+        int firstOcc = formattingSymbol.equals("**") ?
+                line.indexOf(formattingSymbol) + 2 :
+                line.indexOf(formattingSymbol) + 1;
         int lastOcc = line.lastIndexOf(formattingSymbol);
 
         return line.substring(firstOcc, lastOcc);

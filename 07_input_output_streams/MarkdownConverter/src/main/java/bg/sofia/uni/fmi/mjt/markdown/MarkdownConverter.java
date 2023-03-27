@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class MarkdownConverter implements MarkdownConverterAPI {
+
     private final String OPENING_HTML_TAGS = """
             <body>
                 <head>""";
