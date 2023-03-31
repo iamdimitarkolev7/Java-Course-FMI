@@ -12,9 +12,6 @@ public class NetflixRecommender {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(DATASET_SOURCE))) {
             this.dataset = reader.lines().skip(1).map(Content::of).toList();
-
-            System.out.println(this.dataset.size());
-
         } catch(FileNotFoundException e) {
             throw new FileNotFoundException("Cannot find the file specified");
         } catch (IOException e) {
@@ -89,7 +86,17 @@ public class NetflixRecommender {
      * @throws IllegalArgumentException if {@code n} is negative.
      */
     public List<Content> getTopNRatedContent(int n) {
-        throw new UnsupportedOperationException("Method not yet implemented");
+        if (n < 0) {
+            throw new IllegalArgumentException("N should be a positive integer!");
+        }
+
+        return dataset.stream()
+                .sorted((c1, c2) -> Double.compare(
+                        getWeightedRating(c1),
+                        getWeightedRating(c2)
+                ))
+                .limit(n)
+                .toList();
     }
 
     /**
@@ -114,5 +121,14 @@ public class NetflixRecommender {
      */
     public Set<Content> getContentByKeywords(String... keywords) {
         throw new UnsupportedOperationException("Method not yet implemented");
+    }
+
+    private double getWeightedRating(Content c) {
+        double averageImdbScore = dataset.stream().collect(Collectors.averagingDouble(Content::imdbScore));
+        final int SENSITIVITY_THRESHOLD = 10_000;
+
+
+        return (c.imdbVotes() / (c.imdbVotes() + SENSITIVITY_THRESHOLD)) * c.imdbScore() +
+                (SENSITIVITY_THRESHOLD / (c.imdbVotes() + SENSITIVITY_THRESHOLD)) * averageImdbScore;
     }
 }
