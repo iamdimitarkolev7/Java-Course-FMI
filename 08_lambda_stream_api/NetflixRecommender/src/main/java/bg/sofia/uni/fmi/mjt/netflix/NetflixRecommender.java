@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.netflix;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class NetflixRecommender {
@@ -110,7 +111,17 @@ public class NetflixRecommender {
      * @return the sorted list of content similar to the specified one.
      */
     public List<Content> getSimilarContent(Content content) {
-        throw new UnsupportedOperationException("Method not yet implemented");
+        return dataset.stream()
+                .filter(e -> e.type() == content.type())
+                .sorted((c1, c2) -> {
+                    Set<String> genres1 = new HashSet<>(c1.genres());
+                    genres1.retainAll(content.genres());
+
+                    Set<String> genres2 = new HashSet<>(c2.genres());
+                    genres2.retainAll(content.genres());
+                    return Integer.compare(genres2.size(), genres1.size());
+                })
+                .collect(Collectors.toList());
     }
 
     /**
@@ -120,7 +131,21 @@ public class NetflixRecommender {
      * @return an unmodifiable set of movies and shows whose description contains all specified keywords.
      */
     public Set<Content> getContentByKeywords(String... keywords) {
-        throw new UnsupportedOperationException("Method not yet implemented");
+        Set<String> normalizedKeywords = Arrays.stream(keywords)
+                .map(String::strip)
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
+
+        return dataset.stream()
+                .filter(c -> {
+                    Set<String> words = Pattern.compile("[\\p{IsPunctuation}\\s]+")
+                            .splitAsStream(c.description())
+                            .map(String::toLowerCase)
+                            .map(String::strip)
+                            .collect(Collectors.toSet());
+                    return words.containsAll(normalizedKeywords);
+                })
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     private double getWeightedRating(Content c) {
