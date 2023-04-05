@@ -39,5 +39,8 @@ public interface Content {
 
     ContentType getType();
 
-    public List<String> getLikes();
+    List<String> getLikes();
+    void addComment(String comment);
+
+    List<String> getComments();
 }

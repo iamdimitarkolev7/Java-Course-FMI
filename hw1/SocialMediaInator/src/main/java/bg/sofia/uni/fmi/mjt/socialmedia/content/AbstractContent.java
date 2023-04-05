@@ -1,7 +1,6 @@
 package bg.sofia.uni.fmi.mjt.socialmedia.content;
 
 import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.UsernameAlreadyExistsException;
-import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.UsernameNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ public abstract class AbstractContent implements Content {
     private LocalDateTime publishedOn;
 
     private List<String> tags = new ArrayList<>();
+    private List<String> comments = new ArrayList<>();
     private List<String> mentions = new ArrayList<>();
     private List<String> likes = new ArrayList<>();
 
@@ -97,5 +97,15 @@ public abstract class AbstractContent implements Content {
     @Override
     public List<String> getLikes() {
         return likes;
+    }
+
+    @Override
+    public void addComment(String comment) {
+        comments.add(comment);
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

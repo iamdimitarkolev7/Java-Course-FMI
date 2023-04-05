@@ -74,7 +74,7 @@ public interface SocialMediaInator {
      * @throws UsernameNotFoundException If a user with {@code username} does not exist in the platform
      * @throws ContentNotFoundException If there is no content with id {@code id} in the platform
      */
-    void comment(String username, String text, String id);
+    void comment(String username, String text, String id) throws UsernameNotFoundException, ContentNotFoundException;
 
     /**
      * Returns the {@code n} most popular content on the platform.

@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.mjt.socialmedia;
 
+import bg.sofia.uni.fmi.mjt.socialmedia.content.AbstractContent;
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Content;
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Post;
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Story;
@@ -121,8 +122,33 @@ public class EvilSocialInator implements SocialMediaInator {
     }
 
     @Override
-    public void comment(String username, String text, String id) {
+    public void comment(String username, String text, String id) throws UsernameNotFoundException, ContentNotFoundException {
+        if (username == null || username.isEmpty() || username.isBlank()) {
+            throw new IllegalArgumentException("Username should not be empty!");
+        }
 
+        if (text == null || text.isEmpty() || text.isBlank()) {
+            throw new IllegalArgumentException("Text should not be empty!");
+        }
+
+        if (id == null || id.isEmpty() || id.isBlank()) {
+            throw new IllegalArgumentException("Id should not be null!");
+        }
+
+        User currentUser = getUserByUsername(username);
+
+        if (currentUser == null) {
+            throw new UsernameNotFoundException("No such user!");
+        }
+
+        Content content = getContentById(id);
+
+        if (content == null) {
+            throw new ContentNotFoundException("Id is not valid!");
+        }
+
+        content.addComment(text);
+        currentUser.updateActivityLog(UserActions.COMMENT_CONTENT, content.getId(), content.getOwner(), content.getType());
     }
 
     @Override

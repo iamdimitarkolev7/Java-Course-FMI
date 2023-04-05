@@ -94,7 +94,7 @@ public class User {
     }
 
     private void addCommentContentLog(String id, String owner, ContentType contentType) {
-        String logTxt = username + " liked a " + contentType.name().toLowerCase()
+        String logTxt = username + " commented a " + contentType.name().toLowerCase()
                 + " with id " + id + " uploaded by " + owner;
 
         activityLogs.add(logTxt);

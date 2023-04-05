@@ -110,8 +110,8 @@ class EvilSocialInatorTest {
         String storyId0 = evilSocialInator.publishStory(username, publishedOn, description);
         String storyId1 = evilSocialInator.publishStory(username, publishedOn, description);
 
-        Assertions.assertEquals(storyId0, "story-kolev7-4");
-        Assertions.assertEquals(storyId1, "story-kolev7-5");
+        Assertions.assertEquals(storyId0, "story-kolev7-5");
+        Assertions.assertEquals(storyId1, "story-kolev7-6");
 
         String username1 = "kolev9";
         LocalDateTime publishedOn1 = LocalDateTime.now();
@@ -120,7 +120,7 @@ class EvilSocialInatorTest {
         evilSocialInator.register(username1);
 
         String storyId2 = evilSocialInator.publishStory(username1, publishedOn1, description1);
-        Assertions.assertEquals(storyId2, "story-kolev9-6");
+        Assertions.assertEquals(storyId2, "story-kolev9-7");
     }
 
     @Test
@@ -204,5 +204,58 @@ class EvilSocialInatorTest {
         Assertions.assertThrows(UsernameAlreadyExistsException.class, () -> {
             evilSocialInator.like(usernameLiker, id1);
         });
+    }
+
+    @Test
+    @DisplayName("Comment method throws an IllegalArgumentException when given null parameters")
+    public void testCommentInvalidArguments() {
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            evilSocialInator.comment("", "kkk", "kkk");
+        });
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            evilSocialInator.comment("kkk", "", "kkk");
+        });
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            evilSocialInator.comment("kkk", "kkk", "");
+        });
+    }
+
+    @Test
+    @DisplayName("Comment method throws a UsernameNotFoundException when given non-registered username")
+    public void testCommentInvalidUsername() {
+
+        Assertions.assertThrows(UsernameNotFoundException.class, () -> {
+            evilSocialInator.comment("kolev111", "Hahaha that's funny", "story-kolev7-01");
+        });
+    }
+
+    @Test
+    @DisplayName("Comment method throws a ContentNotFoundException when given a wrong id")
+    public void testCommentInvalidId() {
+
+        Assertions.assertThrows(ContentNotFoundException.class, () -> {
+           evilSocialInator.register("kolev7");
+
+           evilSocialInator.comment("kolev7", "Hahaha", "monkey-19");
+        });
+    }
+
+    @Test
+    @DisplayName("Successfully add a comment")
+    public void testAddingComments() throws UsernameAlreadyExistsException, UsernameNotFoundException, ContentNotFoundException {
+
+        evilSocialInator.register("kolev7");
+        evilSocialInator.register("kolev9");
+
+        String id = evilSocialInator.publishPost("kolev7", LocalDateTime.now(), "A wonderful picture");
+
+        Content content = evilSocialInator.getContentById(id);
+
+        Assertions.assertEquals(0, content.getComments().size());
+
+        evilSocialInator.comment("kolev9", "Nice one!", id);
+
+        Assertions.assertEquals(1, content.getComments().size());
     }
 }
