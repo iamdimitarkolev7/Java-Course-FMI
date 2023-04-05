@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorPublishStoryTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-04-05T12:58:45" hostname="DESKTOP-R1KAM7P" time="0.046">
+  <properties/>
+  <testcase name="Publish a story" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorPublishStoryTest" time="0.04"/>
+  <testcase name="Publishing a story with invalid username should throw an Exception" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorPublishStoryTest" time="0.002"/>
+  <testcase name="Publishing a story with null parameters throws an IllegalArgumentException" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorPublishStoryTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
