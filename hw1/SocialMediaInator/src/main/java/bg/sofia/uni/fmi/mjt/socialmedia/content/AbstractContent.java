@@ -1,5 +1,8 @@
 package bg.sofia.uni.fmi.mjt.socialmedia.content;
 
+import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.UsernameAlreadyExistsException;
+import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.UsernameNotFoundException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +23,7 @@ public abstract class AbstractContent implements Content {
 
     private List<String> tags = new ArrayList<>();
     private List<String> mentions = new ArrayList<>();
+    private List<String> likes = new ArrayList<>();
 
     public AbstractContent(String description, LocalDateTime publishedOn, String owner) {
         this.description = description;
@@ -61,5 +65,37 @@ public abstract class AbstractContent implements Content {
     @Override
     public Collection<String> getMentions() {
         return mentions;
+    }
+
+    @Override
+    public void likeContent(String username) throws UsernameAlreadyExistsException {
+        boolean alreadyLikedContent = likes.stream()
+                .anyMatch(user -> user.equals(username));
+
+        if (alreadyLikedContent) {
+            throw new UsernameAlreadyExistsException(username + " user already liked that content");
+        }
+
+        numberOfLikes++;
+        likes.add(username);
+    }
+
+    @Override
+    public String getOwner() {
+        return owner;
+    }
+
+    @Override
+    public ContentType getType() {
+        if (this instanceof Post) {
+            return ContentType.POST;
+        } else {
+            return ContentType.STORY;
+        }
+    }
+
+    @Override
+    public List<String> getLikes() {
+        return likes;
     }
 }

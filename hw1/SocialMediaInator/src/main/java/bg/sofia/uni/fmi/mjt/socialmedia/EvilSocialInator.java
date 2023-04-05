@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.socialmedia;
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Content;
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Post;
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Story;
+import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.ContentNotFoundException;
 import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.UsernameAlreadyExistsException;
 import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.UsernameNotFoundException;
 import bg.sofia.uni.fmi.mjt.socialmedia.user.User;
@@ -12,8 +13,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class EvilSocialInator implements SocialMediaInator {
     public List<User> users;
@@ -28,11 +27,13 @@ public class EvilSocialInator implements SocialMediaInator {
             throw new IllegalArgumentException("Username should not be empty!");
         }
 
-        if (userExists(username)) {
+        User newUser = getUserByUsername(username);
+
+        if (newUser != null) {
             throw new UsernameAlreadyExistsException(username + " username is already used!");
         }
 
-        User newUser = new User(username);
+        newUser = new User(username);
         users.add(newUser);
         newUser.updateActivityLog(UserActions.REGISTER);
     }
@@ -51,13 +52,14 @@ public class EvilSocialInator implements SocialMediaInator {
             throw new IllegalArgumentException("Description should not be empty!");
         }
 
-        if (!userExists(username)) {
+        User currentUser = getUserByUsername(username);
+
+        if (currentUser == null) {
             throw new UsernameNotFoundException("No such user: " + username);
         }
 
         Post newPost = new Post(description, publishedOn, username);
 
-        User currentUser = getUserByUsername(username);
         currentUser.uploadPost(newPost);
         currentUser.updateActivityLog(UserActions.PUBLISH_POST);
 
@@ -78,13 +80,14 @@ public class EvilSocialInator implements SocialMediaInator {
             throw new IllegalArgumentException("Description should not be empty!");
         }
 
-        if (!userExists(username)) {
+        User currentUser = getUserByUsername(username);
+
+        if (currentUser == null) {
             throw new UsernameNotFoundException("No such user: " + username);
         }
 
         Story newStory = new Story(description, publishedOn, username);
 
-        User currentUser = getUserByUsername(username);
         currentUser.uploadStory(newStory);
         currentUser.updateActivityLog(UserActions.PUBLISH_STORY);
 
@@ -92,8 +95,29 @@ public class EvilSocialInator implements SocialMediaInator {
     }
 
     @Override
-    public void like(String username, String id) {
+    public void like(String username, String id) throws UsernameNotFoundException, UsernameAlreadyExistsException, ContentNotFoundException {
+        if (username == null || username.isEmpty() || username.isBlank()) {
+            throw new IllegalArgumentException("Username should not be empty!");
+        }
 
+        if (id == null || id.isEmpty() || id.isBlank()) {
+            throw new IllegalArgumentException("ID should not be empty!");
+        }
+
+        User currentUser = getUserByUsername(username);
+
+        if (currentUser == null) {
+            throw new UsernameNotFoundException("No such user!");
+        }
+
+        Content content = getContentById(id);
+
+        if (content == null) {
+            throw new ContentNotFoundException("No such content!");
+        }
+
+        content.likeContent(username);
+        currentUser.updateActivityLog(UserActions.LIKE_CONTENT, content.getId(), content.getOwner(), content.getType());
     }
 
     @Override
@@ -130,14 +154,17 @@ public class EvilSocialInator implements SocialMediaInator {
         return users;
     }
 
-    public boolean userExists(String username) {
-        return users.stream()
-                .anyMatch(user -> user.getUsername().equals(username));
-    }
-
-    private User getUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         return users.stream()
                 .filter(user -> user.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Content getContentById(String id) {
+        return users.stream()
+                .flatMap(user -> user.getContent().stream())
+                .filter(content -> content.getId().equals(id))
                 .findFirst()
                 .orElse(null);
     }

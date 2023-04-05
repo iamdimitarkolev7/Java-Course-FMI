@@ -1,6 +1,9 @@
 package bg.sofia.uni.fmi.mjt.socialmedia.content;
 
+import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.UsernameAlreadyExistsException;
+
 import java.util.Collection;
+import java.util.List;
 
 public interface Content {
     /**
@@ -30,4 +33,11 @@ public interface Content {
      */
     Collection<String> getMentions();
 
+    void likeContent(String username) throws UsernameAlreadyExistsException;
+
+    String getOwner();
+
+    ContentType getType();
+
+    public List<String> getLikes();
 }

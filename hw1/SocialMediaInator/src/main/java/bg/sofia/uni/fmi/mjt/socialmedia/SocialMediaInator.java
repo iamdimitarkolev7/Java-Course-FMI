@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Content;
+import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.ContentNotFoundException;
 import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.NoUsersException;
 import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.UsernameAlreadyExistsException;
 import bg.sofia.uni.fmi.mjt.socialmedia.exceptions.UsernameNotFoundException;
@@ -62,7 +63,7 @@ public interface SocialMediaInator {
      * @throws UsernameNotFoundException If a user with {@code username} does not exist in the platform
      * @throws ContentNotFoundException If there is no content with id {@code id} in the platform
      */
-    void like(String username, String id);
+    void like(String username, String id) throws UsernameNotFoundException, UsernameAlreadyExistsException, ContentNotFoundException;
 
     /**
      * Comments on a content with id {@code id}.
