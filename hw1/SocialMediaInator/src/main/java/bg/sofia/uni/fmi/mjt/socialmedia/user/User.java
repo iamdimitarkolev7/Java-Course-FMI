@@ -14,7 +14,7 @@ import java.util.Queue;
 public class User {
     private final String username;
     private List<Content> content = new ArrayList<>();
-    private Queue<String> activityLogs = new PriorityQueue<>();
+    private List<String> activityLogs = new ArrayList<>();
 
     public User(String username) {
         this.username = username;
@@ -114,5 +114,9 @@ public class User {
         return content.stream()
                 .filter(c -> c instanceof Story)
                 .toList();
+    }
+
+    public List<String> getActivityLogs() {
+        return activityLogs;
     }
 }

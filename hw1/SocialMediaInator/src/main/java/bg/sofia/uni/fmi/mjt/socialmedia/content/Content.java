@@ -43,4 +43,6 @@ public interface Content {
     void addComment(String comment);
 
     List<String> getComments();
+
+    int getPopularity();
 }

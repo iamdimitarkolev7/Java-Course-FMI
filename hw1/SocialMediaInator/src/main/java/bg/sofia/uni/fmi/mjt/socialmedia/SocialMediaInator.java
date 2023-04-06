@@ -103,7 +103,7 @@ public interface SocialMediaInator {
 
     /**
      * Returns the username of the most popular user.
-     * -> This is the user which was mentioned most times in stories and posts
+     * -> This is the user which has the most likes and most comments on his contents combined
      * @throws NoUsersException if there are currently no users in the platform
      */
     String getMostPopularUser();
@@ -134,6 +134,6 @@ public interface SocialMediaInator {
      * @throws UsernameNotFoundException if a user with {@code username} does not exist in the platform
      * @return List of activities in the above format
      */
-    List<String> getActivityLog(String username);
+    List<String> getActivityLog(String username) throws UsernameNotFoundException;
 
 }

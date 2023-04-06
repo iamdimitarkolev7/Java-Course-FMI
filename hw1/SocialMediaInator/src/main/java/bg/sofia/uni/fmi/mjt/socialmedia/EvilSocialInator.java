@@ -1,6 +1,5 @@
 package bg.sofia.uni.fmi.mjt.socialmedia;
 
-import bg.sofia.uni.fmi.mjt.socialmedia.content.AbstractContent;
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Content;
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Post;
 import bg.sofia.uni.fmi.mjt.socialmedia.content.Story;
@@ -13,7 +12,9 @@ import bg.sofia.uni.fmi.mjt.socialmedia.user.UserActions;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EvilSocialInator implements SocialMediaInator {
     public List<User> users;
@@ -153,27 +154,65 @@ public class EvilSocialInator implements SocialMediaInator {
 
     @Override
     public Collection<Content> getNMostPopularContent(int n) {
-        return null;
+        if (n < 0) {
+            throw new IllegalArgumentException("N should be a non-negative number!");
+        }
+
+        return users.stream()
+                .flatMap(user -> user.getContent().stream())
+                .sorted((c1, c2) -> c2.getPopularity() - c1.getPopularity())
+                .limit(n)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Collection<Content> getNMostRecentContent(String username, int n) {
-        return null;
+        if (username == null || username.isEmpty() || username.isBlank()) {
+            throw new IllegalArgumentException("Username should not be empty!");
+        }
+
+        if (n < 0) {
+            throw new IllegalArgumentException("N should be a non-negative integer");
+        }
+
+        return users.stream()
+                .filter(user -> user.getUsername().equals(username))
+                .flatMap(user -> user.getContent().stream())
+                .limit(n)
+                .collect(Collectors.toList());
     }
 
     @Override
     public String getMostPopularUser() {
-        return null;
+        return users.stream()
+                .max(Comparator.comparingInt(user -> user.getContent().stream()
+                        .mapToInt(Content::getPopularity)
+                        .sum()))
+                .map(User::getUsername)
+                .orElse("");
     }
 
     @Override
     public Collection<Content> findContentByTag(String tag) {
-        return null;
+        return users.stream()
+                .flatMap(user -> user.getContent().stream())
+                .filter(c -> c.getTags().contains(tag))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> getActivityLog(String username) {
-        return null;
+    public List<String> getActivityLog(String username) throws UsernameNotFoundException {
+        if (username == null || username.isEmpty() || username.isBlank()) {
+            throw new IllegalArgumentException("Username should not be empty!");
+        }
+
+        User user = getUserByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("No such user!");
+        }
+
+        return user.getActivityLogs();
     }
 
     public List<User> getUsers() {

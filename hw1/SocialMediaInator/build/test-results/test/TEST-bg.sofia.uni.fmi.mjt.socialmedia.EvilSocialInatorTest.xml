@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2023-04-05T20:37:56" hostname="DESKTOP-R1KAM7P" time="0.083">
+<testsuite name="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-04-06T08:38:50" hostname="DESKTOP-R1KAM7P" time="0.021">
   <properties/>
-  <testcase name="Comment method throws a UsernameNotFoundException when given non-registered username" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.02"/>
-  <testcase name="Liking content should throw an exception when id is invalid" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.015"/>
-  <testcase name="User likes content for the second time should throw an exception" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.018"/>
-  <testcase name="Publish a post" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.002"/>
-  <testcase name="Successfully add a comment" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.001"/>
-  <testcase name="Liking content should throw an exception when user is invalid" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.001"/>
-  <testcase name="Publishing a post with invalid username should throw an Exception" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.002"/>
-  <testcase name="Publish a story" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.002"/>
-  <testcase name="Publishing a post with null parameters throws an IllegalArgumentException" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.002"/>
-  <testcase name="Publishing a story with invalid username should throw an Exception" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.002"/>
-  <testcase name="Comment method throws an IllegalArgumentException when given null parameters" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.002"/>
-  <testcase name="Comment method throws a ContentNotFoundException when given a wrong id" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.001"/>
-  <testcase name="Publishing a story with null parameters throws an IllegalArgumentException" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.001"/>
-  <testcase name="Like content test" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.001"/>
-  <testcase name="Liking content should throw an IllegalArgumentException when parameters are empty" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.001"/>
+  <testcase name="Get activity logs method should throw exceptions when given illegal arguments" classname="bg.sofia.uni.fmi.mjt.socialmedia.EvilSocialInatorTest" time="0.021"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

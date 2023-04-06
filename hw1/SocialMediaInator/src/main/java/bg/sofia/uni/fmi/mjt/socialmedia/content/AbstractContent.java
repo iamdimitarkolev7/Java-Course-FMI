@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class AbstractContent implements Content {
 
@@ -20,7 +22,7 @@ public abstract class AbstractContent implements Content {
 
     private LocalDateTime publishedOn;
 
-    private List<String> tags = new ArrayList<>();
+    private List<String> tags;
     private List<String> comments = new ArrayList<>();
     private List<String> mentions = new ArrayList<>();
     private List<String> likes = new ArrayList<>();
@@ -30,6 +32,21 @@ public abstract class AbstractContent implements Content {
         this.publishedOn = publishedOn;
         this.owner = owner;
         this.id = buildId();
+
+        this.tags = extractTags(description);
+    }
+
+    private List<String> extractTags(String description) {
+        Pattern tagPattern = Pattern.compile("\\#[A-Za-z]+");
+        Matcher tagMatcher = tagPattern.matcher(description);
+
+        List<String> resultTags = new ArrayList<>();
+
+        while (tagMatcher.find()) {
+            resultTags.add(tagMatcher.group());
+        }
+
+        return resultTags;
     }
 
     private String buildId() {
@@ -102,10 +119,16 @@ public abstract class AbstractContent implements Content {
     @Override
     public void addComment(String comment) {
         comments.add(comment);
+        numberOfComments++;
     }
 
     @Override
     public List<String> getComments() {
         return comments;
+    }
+
+    @Override
+    public int getPopularity() {
+        return numberOfLikes + numberOfComments;
     }
 }

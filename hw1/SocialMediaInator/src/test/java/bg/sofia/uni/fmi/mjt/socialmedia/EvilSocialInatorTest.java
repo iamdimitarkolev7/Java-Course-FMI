@@ -10,6 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 class EvilSocialInatorTest {
     private EvilSocialInator evilSocialInator;
@@ -257,5 +260,75 @@ class EvilSocialInatorTest {
         evilSocialInator.comment("kolev9", "Nice one!", id);
 
         Assertions.assertEquals(1, content.getComments().size());
+    }
+
+    @Test
+    @DisplayName("Get N most popular content with negative number parameter should throw exception")
+    public void testGettingNMostPopularContentThrowingException() {
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+           evilSocialInator.getNMostPopularContent(-154);
+        });
+    }
+
+    @Test
+    @DisplayName("Successfully get N most popular contents")
+    public void testGettingNMostPopularContents() throws UsernameAlreadyExistsException, UsernameNotFoundException, ContentNotFoundException {
+
+        evilSocialInator.register("kolev7");
+        evilSocialInator.register("kolev9");
+        evilSocialInator.register("kolev10");
+        evilSocialInator.register("kolev11");
+
+        String id1 = evilSocialInator.publishPost("kolev7", LocalDateTime.now(), "It's been a good day!");
+        String id2 = evilSocialInator.publishStory("kolev7", LocalDateTime.now(), "Nice trip!");
+        String id3 = evilSocialInator.publishPost("kolev7", LocalDateTime.now(), "Winner!");
+        String id4 = evilSocialInator.publishStory("kolev9", LocalDateTime.now(), "good game!");
+
+        evilSocialInator.comment("kolev9", "Congratulations!", id3);
+        evilSocialInator.comment("kolev10", "Great achievement!", id3);
+        evilSocialInator.comment("kolev11", "Amazing! I'm proud of you!", id3);
+        evilSocialInator.like("kolev9", id3);
+        evilSocialInator.like("kolev10", id3);
+        evilSocialInator.like("kolev11", id3);
+
+        evilSocialInator.comment("kolev9", "Wonderful place!", id2);
+        evilSocialInator.comment("kolev10", "Great place!", id2);
+        evilSocialInator.like("kolev9", id2);
+        evilSocialInator.like("kolev11", id2);
+
+        Collection<Content> contents = evilSocialInator.getNMostPopularContent(2);
+
+        Assertions.assertEquals(2, contents.size());
+        Assertions.assertEquals(3, contents.stream().toList().get(0).getNumberOfComments());
+        Assertions.assertEquals(3, contents.stream().toList().get(0).getNumberOfLikes());
+        Assertions.assertEquals(2, contents.stream().toList().get(1).getNumberOfComments());
+        Assertions.assertEquals(2, contents.stream().toList().get(1).getNumberOfComments());
+    }
+
+    @Test
+    @DisplayName("Get N most recent contents should throw an exception when given illegal arguments")
+    public void testGettingNRecentContentsThrowingException() {
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            evilSocialInator.getNMostRecentContent("", 3);
+        });
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            evilSocialInator.getNMostRecentContent("kolev", -18);
+        });
+    }
+
+    @Test
+    @DisplayName("Get activity logs method should throw exceptions when given illegal arguments")
+    public void testGettingActivityLogsThrowingException() {
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+           evilSocialInator.getActivityLog("");
+        });
+
+        Assertions.assertThrows(UsernameNotFoundException.class, () -> {
+            evilSocialInator.getActivityLog("kolev");
+        });
     }
 }
