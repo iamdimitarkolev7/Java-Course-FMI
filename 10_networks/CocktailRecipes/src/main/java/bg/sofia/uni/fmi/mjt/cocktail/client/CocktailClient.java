@@ -1,13 +1,18 @@
 package bg.sofia.uni.fmi.mjt.cocktail.client;
 
+import bg.sofia.uni.fmi.mjt.cocktail.server.Cocktail;
+import bg.sofia.uni.fmi.mjt.cocktail.server.Ingredient;
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Set;
 
 public class CocktailClient {
 
@@ -20,20 +25,49 @@ public class CocktailClient {
     private static final String GET_ALL_COMMAND = "get all";
     private static final String DISCONNECT_COMMAND = "disconnect";
 
-    private static void sendCreateDataToServer(String data, Socket socket) {
+    private static void sendCreateDataToServer(String data, PrintWriter writer, BufferedReader reader) {
+
+        List<String> tokens = List.of(data.split(" "));
+
+        String cocktailName = tokens.get(1);
+        Set<Ingredient> ingredients = new HashSet<>();
+
+        if (tokens.size() > 2) {
+
+            for (int i = 2; i < tokens.size(); i++) {
+                List<String> ingredientTokens = List.of(tokens.get(i).split("="));
+                String ingredient = ingredientTokens.get(0);
+                String quantity = ingredientTokens.get(1);
+
+                ingredients.add(new Ingredient(ingredient, quantity));
+            }
+        }
+
+        Cocktail cocktail = new Cocktail(cocktailName, ingredients);
+
+        Gson gson = new Gson();
+        String cocktailJson = gson.toJson(cocktail);
+
+        writer.println("create " + cocktailJson);
+
+        try {
+            String response = reader.readLine();
+            System.out.println(response);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void requestGetAllDataFromServer(PrintWriter writer, BufferedReader reader) {
 
     }
 
-    private static String requestGetAllDataFromServer(Socket socket) {
-        return null;
+    private static void requestGetByNameDataFromServer(String data, PrintWriter writer, BufferedReader reader) {
+        return;
     }
 
-    private static String requestGetByNameDataFromServer(String data, Socket socket) {
-        return null;
-    }
-
-    private static String requestGetByIngredientDataFromServer(String data, Socket socket) {
-        return null;
+    private static void requestGetByIngredientDataFromServer(String data, PrintWriter writer, BufferedReader reader) {
+        return;
     }
 
     public static void main(String[] args) {
@@ -55,16 +89,16 @@ public class CocktailClient {
                     break;
                 }
                 else if (input.matches(CREATE_PATTERN)) {
-                    sendCreateDataToServer(input, socket);
+                    sendCreateDataToServer(input, writer, reader);
                 }
                 else if (input.matches(GET_ALL_COMMAND)) {
-                    String data = requestGetAllDataFromServer(socket);
+                    requestGetAllDataFromServer(writer, reader);
                 }
                 else if (input.matches(GET_BY_NAME_PATTERN)) {
-                    String data = requestGetByNameDataFromServer(input, socket);
+                    requestGetByNameDataFromServer(input, writer, reader);
                 }
                 else if (input.matches(GET_BY_INGREDIENT_PATTERN)) {
-                    String data = requestGetByIngredientDataFromServer(input, socket);
+                    requestGetByIngredientDataFromServer(input, writer, reader);
                 }
                 else {
                     System.out.println("Invalid command!");
