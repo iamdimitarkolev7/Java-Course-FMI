@@ -43,10 +43,10 @@ public class DefaultCocktailStorage implements CocktailStorage {
     @Override
     public Collection<Cocktail> getCocktailsWithIngredient(String ingredientName) {
 
-        Set<Cocktail> result = cocktails.stream()
-                .filter(x -> x.ingredients().contains(ingredientName)).collect(Collectors.toSet());
-
-        return result;
+        return cocktails.stream()
+                .filter(cocktail -> cocktail.ingredients().stream()
+                        .anyMatch(ingredient -> ingredient.name().equals(ingredientName)))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -56,11 +56,9 @@ public class DefaultCocktailStorage implements CocktailStorage {
             throw new CocktailNotFoundException("There is no cocktail with such name");
         }
 
-        Cocktail foundCocktail = cocktails.stream()
+        return cocktails.stream()
                 .filter(x -> x.name().equals(name))
                 .toList()
                 .get(0);
-
-        return foundCocktail;
     }
 }

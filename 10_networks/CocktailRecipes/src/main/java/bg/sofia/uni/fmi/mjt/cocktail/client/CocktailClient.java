@@ -59,15 +59,37 @@ public class CocktailClient {
     }
 
     private static void requestGetAllDataFromServer(PrintWriter writer, BufferedReader reader) {
+        writer.println("get all");
 
+        try {
+            String data = reader.readLine();
+            System.out.println(data);
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void requestGetByNameDataFromServer(String data, PrintWriter writer, BufferedReader reader) {
-        return;
+        writer.println(data);
+
+        try {
+            String cocktail = reader.readLine();
+            System.out.println(cocktail);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void requestGetByIngredientDataFromServer(String data, PrintWriter writer, BufferedReader reader) {
-        return;
+        writer.println(data);
+
+        try {
+            String cocktails = reader.readLine();
+            System.out.println(cocktails);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
